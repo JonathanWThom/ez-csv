@@ -111,7 +111,18 @@ RSpec.describe Ez::Csv do
         end
 
         context "row columns are not in correct order" do
-          # TODO: This is an indirect test of #ordered_rows
+          before(:each) do
+            2.times do
+              csv.add_row({"header_2": "column_2_value", "header_1": "column_1_value"})
+            end
+          end
+
+          it "generates correct csv" do
+            csv.generate(TEST_FILE)
+            contents = File.read(TEST_FILE)
+
+            expect(contents).to eq read_fixture("csv_with_headers_and_rows")
+          end
         end
       end
 

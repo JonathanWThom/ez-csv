@@ -1,6 +1,6 @@
 module Ez
   class Row
-    attr_reader :params
+    attr_accessor :params
 
     def initialize(params)
       @params = params

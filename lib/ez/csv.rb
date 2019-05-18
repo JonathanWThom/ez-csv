@@ -116,7 +116,9 @@ module Ez
     def ordered_rows
       # TODO: Should be same order as headers, in the case that a row is created
       # with params in an odd order.
-      rows
+      rows.map do |row|
+        row.params = Hash[headers.map { |h| [h, row.params[h.to_sym]]}]
+      end
     end
   end
 
