@@ -2,6 +2,7 @@
 require "ez/csv/version"
 require "csv"
 require "byebug"
+require "securerandom"
 
 module Ez
   class Csv
@@ -20,8 +21,6 @@ module Ez
     end
 
     def add_row(params = {})
-      ## make errors constants?
-      ## freeze strings
       if headers.any?
         if params.is_a?(Hash) && !params.keys.included_in?(headers.map(&:to_sym))
           raise Error, Error::INVALID_HEADERS
@@ -37,13 +36,19 @@ module Ez
       rows << Row.new(params)
     end
 
-    def remove_row(index)
-      rows.delete_at(index)
+    def find_rows_where(&block)
+      # returns rows with indices?
+      # then can be removed or updated
+
+      # value at header1 is false
+      # indices = find_rows_where(&block)
     end
 
-    def remove_rows(*indices)
-      indices.each do |index|
-        rows.delete_at(index)
+    def generate(path = "#{SecureRandom.uuid}.csv")
+      CSV.open(*csv_args(path)) do |csv|
+        ordered_rows.each do |row|
+          csv << row.values
+        end
       end
     end
 
@@ -58,11 +63,13 @@ module Ez
       end
     end
 
-    def generate(path = "#{SecureRandom.uuid}.csv")
-      CSV.open(*csv_args(path)) do |csv|
-        ordered_rows.each do |row|
-          csv << row.values
-        end
+    def remove_row(index)
+      rows.delete_at(index)
+    end
+
+    def remove_rows(*indices)
+      indices.each do |index|
+        rows.delete_at(index)
       end
     end
 
@@ -71,14 +78,6 @@ module Ez
       # can change order
       # can do second tier ordering
       ## allow them to pass block for custom sorting?
-    end
-
-    def find_rows_where(&block)
-      # returns rows with indices?
-      # then can be removed or updated
-
-      # value at header1 is false
-      # indices = find_rows_where(&block)
     end
 
     def update_row(index, &block)
@@ -109,6 +108,7 @@ module Ez
 
     def ordered_rows
       # should be same order as headers
+      rows
     end
   end
 

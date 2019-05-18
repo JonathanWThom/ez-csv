@@ -1,4 +1,10 @@
 RSpec.describe Ez::Csv do
+  TEST_FILE = "test.csv"
+
+  after(:each) do
+    File.delete(TEST_FILE) if File.file?(TEST_FILE)
+  end
+
   it "has a version number" do
     expect(Ez::Csv::VERSION).not_to be nil
   end
@@ -76,6 +82,76 @@ RSpec.describe Ez::Csv do
     end
   end
 
+  describe "#find_rows_where" do
+
+  end
+
+  describe "#generate" do
+    context "csv with headers" do
+      let(:csv) { Ez::Csv.new(headers: ["header_1", "header_2"]) }
+
+      context "csv with rows" do
+        before(:each) do
+          2.times do
+            csv.add_row({"header_1": "column_1_value", "header_2": "column_2_value"})
+          end
+        end
+
+        it "generates correct csv" do
+          csv.generate(TEST_FILE)
+          contents = File.read(TEST_FILE)
+
+          expect(contents).to eq(
+            "header_1,header_2\ncolumn_1_value,column_2_value\ncolumn_1_value,column_2_value\n"
+          )
+        end
+      end
+
+      context "csv with no rows" do
+        it "generates correct csv" do
+          csv.generate(TEST_FILE)
+          contents = File.read(TEST_FILE)
+
+          expect(contents).to eq("header_1,header_2\n")
+        end
+      end
+    end
+
+    context "csv with no headers" do
+      let(:csv) { Ez::Csv.new }
+
+      context "csv with rows" do
+        before(:each) do
+          2.times do
+            csv.add_row(["column_1_value", "column_2_value"])
+          end
+
+          it "generates correct csv" do
+            csv.generate(TEST_FILE)
+            contents = File.read(TEST_FILE)
+
+            expect(contents).to eq(
+              "column_1_value,column_2_value\ncolumn_1_value,column_2_value\n"
+            )
+          end
+        end
+      end
+
+      context "csv with no rows" do
+        it "generates correct csv" do
+          csv.generate(TEST_FILE)
+          contents = File.read(TEST_FILE)
+
+          expect(contents).to eq("")
+        end
+      end
+    end
+  end
+
+  describe "#read" do
+
+  end
+
   describe "#remove_row" do
 
   end
@@ -84,19 +160,7 @@ RSpec.describe Ez::Csv do
 
   end
 
-  describe "#read" do
-
-  end
-
-  describe "#generate" do
-
-  end
-
   describe "#sort_columns_by" do
-
-  end
-
-  describe "#find_rows_where" do
 
   end
 
