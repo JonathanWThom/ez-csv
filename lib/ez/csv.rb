@@ -1,10 +1,15 @@
+# frozen_string_literal: true
 require "ez/csv/version"
 require "csv"
 require "byebug"
 
 module Ez
   class Csv
-    class Error < StandardError; end
+    class Error < StandardError
+      INVALID_HEADERS = "Invalid row headers"
+      NO_HEADERS = "Csv does not have any headers"
+      SPECIFY_HEADERS = "Must specify headers for each row column"
+    end
 
     attr_reader :rows
     attr_accessor :headers
@@ -19,13 +24,13 @@ module Ez
       ## freeze strings
       if headers.any?
         if params.is_a?(Hash) && !params.keys.included_in?(headers.map(&:to_sym))
-          raise Error, "Invalid row headers"
+          raise Error, Error::INVALID_HEADERS
         elsif params.is_a?(Array)
-          raise Error, "Please specify headers for each row column"
+          raise Error, Error::SPECIFY_HEADERS
         end
       else
         if params.is_a?(Hash)
-          raise Error, "Csv does not have any headers"
+          raise Error, Error::NO_HEADERS
         end
       end
 

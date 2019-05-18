@@ -24,7 +24,7 @@ RSpec.describe Ez::Csv do
         it "raises error" do
           expect do
             csv.add_row(params)
-          end.to raise_error(Ez::Csv::Error, "Csv does not have any headers")
+          end.to raise_error(Ez::Csv::Error, Ez::Csv::Error::NO_HEADERS)
         end
       end
     end
@@ -38,7 +38,7 @@ RSpec.describe Ez::Csv do
         it "raises error" do
           expect do
             csv.add_row(params)
-          end.to raise_error(Ez::Csv::Error, "Please specify headers for each row column")
+          end.to raise_error(Ez::Csv::Error, Ez::Csv::Error::SPECIFY_HEADERS)
         end
       end
 
@@ -70,7 +70,7 @@ RSpec.describe Ez::Csv do
         it "raises error" do
           expect do
             csv.add_row(params)
-          end.to raise_error(Ez::Csv::Error, "Invalid row headers")
+          end.to raise_error(Ez::Csv::Error, Ez::Csv::Error::INVALID_HEADERS)
         end
       end
     end
