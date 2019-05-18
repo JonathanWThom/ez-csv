@@ -146,11 +146,17 @@ RSpec.describe Ez::Csv do
 
   describe "#read" do
     context "csv with headers" do
-      let(:csv) {
-        file = Tempfile.create
-      }
       context "csv with rows" do
+        let(:path) { path_to_fixture("csv_with_headers_and_rows") }
+        let(:csv) { Ez::Csv.new.read(path) }
 
+        it "has correct headers" do
+
+        end
+
+        it "has correct rows" do
+
+        end
       end
 
       context "csv with no rows" do
@@ -191,7 +197,11 @@ RSpec.describe Ez::Csv do
 
   private
 
+  def path_to_fixture(name)
+    File.join("spec", "fixtures", name + ".csv")
+  end
+
   def read_fixture(name)
-    File.read(File.join("spec", "fixtures", name + ".csv"))
+    File.read(path_to_fixture(name))
   end
 end
