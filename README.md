@@ -30,7 +30,7 @@ method signature totally defined.**
 ```
 # Create a CSV from scratch
 csv = Ez::Csv.new(headers: ["Name", "Phone Number", "Email"])
-csv.generate("my_file_path")
+csv.generate("my_file_path") # writes CSV data to file
 
 # Convert an already existing CSV to an Ez::Csv object
 csv = Ez::Csv.new.read("my_file_path", headers: true)
