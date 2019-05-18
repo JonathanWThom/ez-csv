@@ -15,7 +15,20 @@ module Ez
     end
 
     def add_row(params = {})
-      raise Error, "message" if !headers.included_in?(params.keys)
+      ## make errors constants?
+      ## freeze strings
+      if headers.any?
+        if params.is_a?(Hash) && !params.keys.included_in?(headers.map(&:to_sym))
+          raise Error, "Invalid row headers"
+        elsif params.is_a?(Array)
+          raise Error, "Please specify headers for each row column"
+        end
+      else
+        if params.is_a?(Hash)
+          raise Error, "Csv does not have any headers"
+        end
+      end
+
       rows << Row.new(params)
     end
 
@@ -102,7 +115,11 @@ module Ez
     end
 
     def values
-      params.values
+      if params.is_a? Hash
+        params.values
+      else
+        params
+      end
     end
   end
 end
