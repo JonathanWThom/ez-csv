@@ -101,9 +101,7 @@ RSpec.describe Ez::Csv do
           csv.generate(TEST_FILE)
           contents = File.read(TEST_FILE)
 
-          expect(contents).to eq(
-            "header_1,header_2\ncolumn_1_value,column_2_value\ncolumn_1_value,column_2_value\n"
-          )
+          expect(contents).to eq read_fixture("csv_with_headers_and_rows")
         end
       end
 
@@ -112,7 +110,7 @@ RSpec.describe Ez::Csv do
           csv.generate(TEST_FILE)
           contents = File.read(TEST_FILE)
 
-          expect(contents).to eq("header_1,header_2\n")
+          expect(contents).to eq read_fixture("csv_with_headers_no_rows")
         end
       end
     end
@@ -130,9 +128,7 @@ RSpec.describe Ez::Csv do
             csv.generate(TEST_FILE)
             contents = File.read(TEST_FILE)
 
-            expect(contents).to eq(
-              "column_1_value,column_2_value\ncolumn_1_value,column_2_value\n"
-            )
+            expect(contents).to eq read_fixture("csv_with_no_headers_with_rows")
           end
         end
       end
@@ -149,7 +145,28 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#read" do
+    context "csv with headers" do
+      let(:csv) {
+        file = Tempfile.create
+      }
+      context "csv with rows" do
 
+      end
+
+      context "csv with no rows" do
+
+      end
+    end
+
+    context "csv with no headers" do
+      context "csv with rows" do
+
+      end
+
+      context "csv with no rows" do
+
+      end
+    end
   end
 
   describe "#remove_row" do
@@ -170,5 +187,11 @@ RSpec.describe Ez::Csv do
 
   describe "#update_rows" do
 
+  end
+
+  private
+
+  def read_fixture(name)
+    File.read(File.join("spec", "fixtures", name + ".csv"))
   end
 end
