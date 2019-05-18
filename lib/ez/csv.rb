@@ -1,11 +1,14 @@
 # frozen_string_literal: true
-require "ez/csv/version"
+require "ez/row"
+require "array"
 require "csv"
 require "byebug"
 require "securerandom"
 
 module Ez
   class Csv
+    VERSION = "0.1.0"
+
     class Error < StandardError
       INVALID_HEADERS = "Invalid row headers"
       NO_HEADERS = "Csv does not have any headers"
@@ -117,25 +120,4 @@ module Ez
     end
   end
 
-  class Row
-    attr_reader :params
-
-    def initialize(params)
-      @params = params
-    end
-
-    def values
-      if params.is_a? Hash
-        params.values
-      else
-        params
-      end
-    end
-  end
-end
-
-class Array
-  def included_in?(array)
-    array.to_set.superset?(self.to_set)
-  end
 end

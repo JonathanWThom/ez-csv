@@ -95,17 +95,23 @@ RSpec.describe Ez::Csv do
       let(:csv) { Ez::Csv.new(headers: ["header_1", "header_2"]) }
 
       context "csv with rows" do
-        before(:each) do
-          2.times do
-            csv.add_row({"header_1": "column_1_value", "header_2": "column_2_value"})
+        context "rows columns are in correct order" do
+          before(:each) do
+            2.times do
+              csv.add_row({"header_1": "column_1_value", "header_2": "column_2_value"})
+            end
+          end
+
+          it "generates correct csv" do
+            csv.generate(TEST_FILE)
+            contents = File.read(TEST_FILE)
+
+            expect(contents).to eq read_fixture("csv_with_headers_and_rows")
           end
         end
 
-        it "generates correct csv" do
-          csv.generate(TEST_FILE)
-          contents = File.read(TEST_FILE)
-
-          expect(contents).to eq read_fixture("csv_with_headers_and_rows")
+        context "row columns are not in correct order" do
+          # TODO: This is an indirect test of #ordered_rows
         end
       end
 
