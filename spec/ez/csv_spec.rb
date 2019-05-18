@@ -87,7 +87,37 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#find_rows_where" do
+    context "csv has no headers" do
+      let(:csv) { Ez::Csv.new }
 
+      it "raises error" do
+        expect do
+          csv.find_rows_where do |row|
+            row.value_at("header_1") == "no"
+          end
+        end.to raise_error(Ez::Csv::Error, Ez::Csv::Error::INVALID_METHOD)
+      end
+    end
+
+    context "csv has headers" do
+      let(:csv) {
+        params1 = { "header_1": "yes", "header_2": "no" }
+        params2 = { "header_1": "no", "header_2": "yes" }
+        csv = Ez::Csv.new(headers: ["header_1", "header_2"])
+        csv.add_row(params1)
+        csv.add_row(params2)
+        csv
+      }
+
+      ## should it return indices, or values?
+      it "returns correct row indices" do
+        result = csv.find_rows_where do |row|
+          row.value_at("header_1") == "no"
+        end
+
+        expect(result).to eq [1]
+      end
+    end
   end
 
   describe "#generate" do
@@ -169,7 +199,7 @@ RSpec.describe Ez::Csv do
     context "csv with headers" do
       context "csv with rows" do
         let(:path) { path_to_fixture("csv_with_headers_and_rows") }
-        let(:csv) { Ez::Csv.new.read(path) }
+        let(:csv) { Ez::Csv.new.read(path, headers: true) }
 
         it "has correct headers" do
 

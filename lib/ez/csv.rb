@@ -11,6 +11,7 @@ module Ez
 
     class Error < StandardError
       INVALID_HEADERS = "Invalid row headers"
+      INVALID_METHOD = "Method not allowed for CSV without headers"
       NO_HEADERS = "Csv does not have any headers"
       SPECIFY_HEADERS = "Must specify headers for each row column"
     end
@@ -44,11 +45,9 @@ module Ez
     end
 
     def find_rows_where(&block)
-      # returns rows with indices?
-      # then can be removed or updated
+      raise Error, Error::INVALID_METHOD if headers.empty?
 
-      # value at header1 is false
-      # indices = find_rows_where(&block)
+      rows.select { |row| block.call(row) }.map { |r| rows.index(r) }
     end
 
     def generate(path = "#{SecureRandom.uuid}.csv")
@@ -68,6 +67,8 @@ module Ez
           add_row(row.to_h)
         end
       end
+
+      self
     end
 
     def remove_row(index)
