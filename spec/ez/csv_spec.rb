@@ -82,6 +82,10 @@ RSpec.describe Ez::Csv do
     end
   end
 
+  describe "#change_row_order" do
+
+  end
+
   describe "#find_rows_where" do
 
   end

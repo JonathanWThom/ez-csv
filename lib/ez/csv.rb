@@ -36,6 +36,10 @@ module Ez
       rows << Row.new(params)
     end
 
+    def change_row_order(new_order)
+      # todo change the order of the rows
+    end
+
     def find_rows_where(&block)
       # returns rows with indices?
       # then can be removed or updated
@@ -107,7 +111,8 @@ module Ez
     end
 
     def ordered_rows
-      # should be same order as headers
+      # TODO: Should be same order as headers, in the case that a row is created
+      # with params in an odd order.
       rows
     end
   end

@@ -1,15 +1,17 @@
 # Ez::Csv
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ez/csv`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Ez::Csv is a wrapper around Ruby's standard CSV class. The goal is to make it simple
+to create, read from, and modify CSV files. The project is a work in progress. See
+[Usage](#usage) for a preview of the public methods in development for V1.
 
 ## Installation
+
+**Note: This gem is not yet published**
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ez-csv'
+gem "ez-csv"
 ```
 
 And then execute:
@@ -22,18 +24,30 @@ Or install it yourself as:
 
 ## Usage
 
+**Many of these features are either not yet complete, or have yet to have their
+method signature totally defined.**
+
 ```
+# Create a CSV from scratch
 csv = Ez::Csv.new(headers: ["Name", "Phone Number", "Email"])
+csv.generate("my_file_path")
+
+# Convert an already existing CSV to an Ez::Csv object
+csv = Ez::Csv.new.read("my_file_path", headers: true)
+
+# Modify Ez::Csv object
 csv.add_row("Name": Bilbo Baggins, "Email": "theonering@gmail.com")
-csv.rows
-csv.remove_row(0)
+csv.remove_row(0) # by index
 csv.remove_rows(0, 2)
-csv.generate("file_name") # or default
-csv.sort_columns_by(field, order: :desc)
-csv.new.read(path, headers: true) # return ez::csv object
-csv.find_rows_where(block) # returns indexes
+csv.sort_columns_by("column_name", order: :desc)
+csv.change_row_order(new_order)
 csv.update_row(0, block)
-csv.update_rows(0, 2, block) # this syntax might now work
+csv.update_rows(0, 2, block) # this syntax might not work
+# After modifying, you may run csv.generate again to rewrite your updated CSV
+
+# Query Ez::Csv object
+csv.rows
+csv.find_rows_where(block) # returns indexes
 
 ```
 
@@ -45,7 +59,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ez-csv.
+Bug reports and pull requests are welcome on GitHub at https://github.com/JonathanWThom/ez-csv.
 
 ## License
 
