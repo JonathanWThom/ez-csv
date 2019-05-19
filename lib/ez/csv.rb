@@ -47,7 +47,7 @@ module Ez
     def find_rows_where(&block)
       raise Error, Error::INVALID_METHOD if headers.empty?
 
-      rows.select { |row| block.call(row) }.map { |r| rows.index(r) }
+      rows.select { |row| yield(row) }.map { |r| rows.index(r) } if block_given?
     end
 
     def generate(path = "#{SecureRandom.uuid}.csv")
