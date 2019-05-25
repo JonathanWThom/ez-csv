@@ -267,7 +267,115 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#sort_columns_by" do
+    context "text columns" do
+      # try with nil
+      let(:a_row) { Ez::Row.new("column_1": "A") }
+      let(:b_row) { Ez::Row.new("column_1": "B") }
 
+      context "ascending order" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << b_row
+          csv.rows << a_row
+          csv
+        }
+
+        it "returns rows in correct order" do
+          csv.sort_columns_by("column_1")
+
+          expect(csv.rows).to eq [a_row, b_row]
+        end
+      end
+
+      context "descending order" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << a_row
+          csv.rows << b_row
+          csv
+        }
+
+        it "returns rows in correct order" do
+          csv.sort_columns_by("column_1", order: :desc)
+
+          expect(csv.rows).to eq [b_row, a_row]
+        end
+      end
+    end
+
+    context "number columns" do
+      let(:one_row) { Ez::Row.new("column_1": 1) }
+      let(:two_row) { Ez::Row.new("column_1": 2) }
+
+      context "ascending order" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << two_row
+          csv.rows << one_row
+          csv.rows << nil_row
+
+          csv
+        }
+
+        it "returns rows in correct order" do
+          csv.sort_columns_by("column_1")
+
+          expect(csv.rows).to eq [one_row, two_row]
+        end
+      end
+
+      context "descending order" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << one_row
+          csv.rows << two_row
+          csv
+        }
+
+        it "returns rows in correct order" do
+          csv.sort_columns_by("column_1", order: :desc)
+
+          expect(csv.rows).to eq [two_row, one_row]
+        end
+      end
+    end
+
+    context "unsupported column types" do
+      let(:value_row) { Ez::Row.new("column_1": { key: "value" }) }
+      let(:zalue_row) { Ez::Row.new("column_1": { key: "zalue" }) }
+      let(:csv) {
+        csv = Ez::Csv.new(headers: ["column_1"])
+        csv.rows << zalue_row
+        csv.rows << value_row
+        csv
+      }
+
+      it "raises error" do
+        expect do
+          csv.sort_columns_by("column_1")
+        end.to raise_error(Ez::Csv::Error::UNSUPPORTED_COLUMN_VALUES)
+      end
+    end
+
+    context "no headers" do
+      it "raises error" do
+
+      end
+    end
+
+    context "column name doesn't exist" do
+      it "raises error" do
+
+      end
+    end
+
+    context "column with a mix of numbers and strings" do
+
+    end
+
+    context "column has nil row values" do
+      # support this!
+    end
   end
 
   describe "#update_row" do

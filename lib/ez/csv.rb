@@ -15,6 +15,7 @@ module Ez
       NO_HEADERS = "Csv does not have any headers"
       ROW_NOT_FOUND = "Row not found"
       SPECIFY_HEADERS = "Must specify headers for each row column"
+      UNSUPPORTED_COLUMN_VALUES = "Unable to sort column values"
     end
 
     attr_reader :rows
@@ -84,11 +85,19 @@ module Ez
       end
     end
 
-    def sort_columns_by(field, order: :asc)
-      # todo
-      # can change order
-      # can do second tier ordering
-      ## allow them to pass block for custom sorting?
+    def sort_columns_by(column, order: :asc)
+      #@rows = rows.sort_by { |row| row.value_at(column) }
+      begin
+        if order == :asc
+          @rows = rows.sort { |a, b| a.value_at(column) <=> b.value_at(column) }
+        else
+          @rows = rows.sort { |a, b| b.value_at(column) <=> a.value_at(column) }
+        end
+      rescue
+        raise Error, Error::UNSUPPORTED_COLUMN_VALUES
+      end
+
+      ## TODO: Add second tier ordering
     end
 
     def update_row(index, &block)
@@ -101,6 +110,11 @@ module Ez
       indices.each do |index|
         update_row(index, block)
       end
+    end
+
+    def values_for(column)
+      # todo
+      # lists all column row values
     end
 
     private
