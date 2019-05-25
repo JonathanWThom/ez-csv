@@ -13,6 +13,7 @@ module Ez
       INVALID_HEADERS = "Invalid row headers"
       INVALID_METHOD = "Method not allowed for CSV without headers"
       NO_HEADERS = "Csv does not have any headers"
+      ROW_NOT_FOUND = "Row not found"
       SPECIFY_HEADERS = "Must specify headers for each row column"
     end
 
@@ -72,7 +73,9 @@ module Ez
     end
 
     def remove_row(index)
-      rows.delete_at(index)
+      if !rows.delete_at(index)
+        raise Error, Error::ROW_NOT_FOUND
+      end
     end
 
     def remove_rows(*indices)

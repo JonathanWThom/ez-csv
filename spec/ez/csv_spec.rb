@@ -109,7 +109,6 @@ RSpec.describe Ez::Csv do
         csv
       }
 
-      ## should it return indices, or values?
       it "returns correct row indices" do
         result = csv.find_rows_where do |row|
           row.value_at("header_1") == "no"
@@ -227,7 +226,30 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#remove_row" do
+    let(:row) { Ez::Row.new("column_1_value") }
+    let(:csv) {
+      csv = Ez::Csv.new
+      csv.rows << row
+      csv
+    }
 
+    context "row index is present" do
+      it "removes row" do
+        csv.remove_row(0)
+
+        expect(csv.rows.length).to eq 0
+      end
+    end
+
+    context "row index is not present" do
+      let(:csv) { Ez::Csv.new }
+
+      it "raises error" do
+        expect do
+          csv.remove_row(1)
+        end.to raise_error Ez::Csv::Error::ROW_NOT_FOUND
+      end
+    end
   end
 
   describe "#remove_rows" do
