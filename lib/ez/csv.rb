@@ -80,7 +80,7 @@ module Ez
 
     def remove_rows(*indices)
       indices.each do |index|
-        rows.delete_at(index)
+        remove_row(index)
       end
     end
 

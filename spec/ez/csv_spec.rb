@@ -226,10 +226,9 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#remove_row" do
-    let(:row) { Ez::Row.new("column_1_value") }
     let(:csv) {
       csv = Ez::Csv.new
-      csv.rows << row
+      csv.rows << Ez::Row.new("column_1_value")
       csv
     }
 
@@ -253,7 +252,18 @@ RSpec.describe Ez::Csv do
   end
 
   describe "#remove_rows" do
+    let(:csv) {
+      csv = Ez::Csv.new
+      2.times { csv.rows << Ez::Row.new("column_1_value") }
+      csv
+    }
 
+    it "calls remove_row for each specified index" do
+      expect(csv).to receive(:remove_row).with(0)
+      expect(csv).to receive(:remove_row).with(1)
+
+      csv.remove_rows(0, 1)
+    end
   end
 
   describe "#sort_columns_by" do
