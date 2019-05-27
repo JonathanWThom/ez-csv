@@ -312,8 +312,6 @@ RSpec.describe Ez::Csv do
           csv = Ez::Csv.new(headers: ["column_1"])
           csv.rows << two_row
           csv.rows << one_row
-          csv.rows << nil_row
-
           csv
         }
 
@@ -357,9 +355,17 @@ RSpec.describe Ez::Csv do
       end
     end
 
-    context "no headers" do
-      it "raises error" do
+    context "header is not present" do
+      let(:csv) {
+        csv = Ez::Csv.new
+        csv.rows << Ez::Row.new("value")
+        csv
+      }
 
+      it "raises error" do
+        expect do
+          csv.sort_columns_by("column_1")
+        end.to raise_error(Ez::Csv::Error::COLUMN_NOT_FOUND)
       end
     end
 

@@ -10,6 +10,7 @@ module Ez
     VERSION = "0.1.0"
 
     class Error < StandardError
+      COLUMN_NOT_FOUND = "Column not found"
       INVALID_HEADERS = "Invalid row headers"
       INVALID_METHOD = "Method not allowed for CSV without headers"
       NO_HEADERS = "Csv does not have any headers"
@@ -86,7 +87,8 @@ module Ez
     end
 
     def sort_columns_by(column, order: :asc)
-      #@rows = rows.sort_by { |row| row.value_at(column) }
+      raise Error, Error::COLUMN_NOT_FOUND if !headers.include?(column)
+
       begin
         if order == :asc
           @rows = rows.sort { |a, b| a.value_at(column) <=> b.value_at(column) }
