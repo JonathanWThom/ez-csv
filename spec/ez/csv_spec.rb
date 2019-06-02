@@ -369,18 +369,43 @@ RSpec.describe Ez::Csv do
       end
     end
 
-    context "column name doesn't exist" do
-      it "raises error" do
-
-      end
-    end
-
     context "column with a mix of numbers and strings" do
 
     end
 
     context "column has nil row values" do
-      # support this!
+      let(:row) { Ez::Row.new({"column_1": "value"}) }
+      let(:nil_row) { Ez::Row.new({"column_1": nil}) }
+
+      context "ascending sort" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << nil_row
+          csv.rows << row
+          csv
+        }
+
+        it "moves nils to end of list" do
+          csv.sort_columns_by("column_1")
+
+          expect(csv.rows).to eq [row, nil_row]
+        end
+      end
+
+      context "descending sort" do
+        let(:csv) {
+          csv = Ez::Csv.new(headers: ["column_1"])
+          csv.rows << row
+          csv.rows << nil_row
+          csv
+        }
+
+        it "moves nils to start of list" do
+          csv.sort_columns_by("column_1", order: :desc)
+
+          expect(csv.rows).to eq [nil_row, row]
+        end
+      end
     end
   end
 

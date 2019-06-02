@@ -90,10 +90,20 @@ module Ez
       raise Error, Error::COLUMN_NOT_FOUND if !headers.include?(column)
 
       begin
-        if order == :asc
-          @rows = rows.sort { |a, b| a.value_at(column) <=> b.value_at(column) }
-        else
-          @rows = rows.sort { |a, b| b.value_at(column) <=> a.value_at(column) }
+        @rows = rows.sort do |a, b|
+          a_val = a.value_at(column)
+          b_val = b.value_at(column)
+          if a_val && b_val
+            a_val <=> b_val
+          elsif a_val
+            -1
+          else
+            1
+          end
+        end
+
+        if order == :desc
+          @rows.reverse!
         end
       rescue
         raise Error, Error::UNSUPPORTED_COLUMN_VALUES
